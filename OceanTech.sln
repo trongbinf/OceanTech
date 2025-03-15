@@ -9,7 +9,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DataAccessLayer", "DataAcce
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BusinessLogicLayer", "BusinessLogicLayer\BusinessLogicLayer.csproj", "{F1DB7981-E720-4135-86AD-DD7615B07194}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OceanTech.MVC", "OceanTech.MVC\OceanTech.MVC.csproj", "{DFA2D321-2891-4DDE-89B5-ACE5BBCB726C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OceanTech.MVC", "OceanTech.MVC\OceanTech.MVC.csproj", "{DFA2D321-2891-4DDE-89B5-ACE5BBCB726C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

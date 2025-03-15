@@ -7,6 +7,9 @@
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/OceanTech.MVC.styles.css" asp-append-version="true" />
+    <!-- DataTables CSS -->
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/jquery.dataTables.min.css">
+
 </head>
 <body>
     <header>
@@ -30,20 +33,53 @@
             </div>
         </nav>
     </header>
-    <div class="container">
-        <main role="main" class="pb-3">
+
+    <div class="container-fluid">
+        <ul class="nav nav-tabs mb-3">
+            <li class="nav-item">
+                <a class="nav-link active" data-url="/Employee/Index" href="#">Quản lý Employee</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" data-url="/Province/Index" href="#">Danh mục Tỉnh</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" data-url="/District/Index" href="#">Danh mục Huyện</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" data-url="/Ward/Index" href="#">Danh mục Xã</a>
+            </li>
+        </ul>
+
+        <div id="content">
             @RenderBody()
-        </main>
+        </div>
     </div>
 
-    <footer class="border-top footer text-muted">
+    @* <footer class="border-top footer text-muted">
         <div class="container">
             &copy; 2025 - OceanTech.MVC - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
         </div>
-    </footer>
+    </footer> *@
+    
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
+    <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            $(".nav-link").click(function (e) {
+                e.preventDefault();
+                var url = $(this).data("url");
+
+                $(".nav-link").removeClass("active");
+                $(this).addClass("active");
+
+                $.get(url, function (data) {
+                    $("#content").html(data);
+                });
+            });
+        });
+    </script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

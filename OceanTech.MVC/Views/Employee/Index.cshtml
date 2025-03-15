@@ -1,0 +1,46 @@
+﻿<div class="card">
+    <div class="card-body">
+        <h3>Danh sách Employee</h3>
+        <table id="employeeTable" class="display">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Họ tên</th>
+                    <th>Ngày sinh</th>
+                    <th>Nghề nghiệp</th>
+                    <th>Số điện thoại</th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function () {
+        $('#employeeTable').DataTable({
+            "ajax": {
+                "url": "/api/EmployeeApi",
+                "dataSrc": ""
+            },
+            "columns": [
+                { "data": "id" },
+                { "data": "name" },
+                { "data": "birthDate" },
+                { "data": "job" },
+                { "data": "phone" }
+            ],
+            "language": {
+                "search": "Tìm kiếm:",
+                "lengthMenu": "Hiển thị _MENU_ dòng",
+                "info": "Hiển thị _START_ đến _END_ trong _TOTAL_ mục",
+                "paginate": {
+                    "first": "Đầu",
+                    "last": "Cuối",
+                    "next": "Tiếp",
+                    "previous": "Trước"
+                }
+            }
+        });
+    });
+</script>
