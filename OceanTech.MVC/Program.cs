@@ -1,4 +1,6 @@
-﻿using Microsoft.OpenApi.Models;
+﻿using DataAccessLayer.Data;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.OpenApi.Models;
 
 namespace OceanTech.MVC
 {
@@ -10,7 +12,11 @@ namespace OceanTech.MVC
 
             // Add services to the container.
             builder.Services.AddControllersWithViews();
-
+            // Configure the DbContext
+            builder.Services.AddDbContext<OceanTechDbContext>(options =>
+            {
+                options.UseSqlServer(builder.Configuration.GetConnectionString("DBContext"));
+            });
             // Thêm dịch vụ Swagger
             builder.Services.AddSwaggerGen(c =>
             {

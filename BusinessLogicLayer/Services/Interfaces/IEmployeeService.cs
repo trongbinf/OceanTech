@@ -9,6 +9,10 @@ namespace BusinessLogicLayer.Services.Interfaces
 {
     public interface IEmployeeService
     {
-        Task<IEnumerable<Employee>> GetAllEmployees();
+        Task<IEnumerable<Employee>> GetEmployees();
+        Task<Employee> GetEmployeeById(int id);
+        Task<bool> CreateEmployee(Employee e);
+        Task<bool> UpdateEmployee(Employee e);
+        Task<bool> DeleteEmployee(int id);
     }
 }
