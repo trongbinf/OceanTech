@@ -1,4 +1,5 @@
-﻿using DataAccessLayer.Data;
+﻿using BusinessLogicLayer.Services.Interfaces;
+using DataAccessLayer.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 
@@ -27,6 +28,9 @@ namespace OceanTech.MVC
                     Description = "API documentation for OceanTech project"
                 });
             });
+
+            builder.Services.AddScoped<IEmployeeService, IEmployeeService>();
+
 
             builder.Services.AddRazorPages().AddRazorRuntimeCompilation();
             var app = builder.Build();

@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace BusinessLogicLayer.Services
 {
-    class EmployeeService : IEmployeeService
+   public class EmployeeService : IEmployeeService
     {
         public Task<bool> CreateEmployee(Employee e)
         {
