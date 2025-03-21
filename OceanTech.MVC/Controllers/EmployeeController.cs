@@ -1,4 +1,5 @@
 ﻿using BusinessLogicLayer.Services.Interfaces;
+using BusinessModels.Constants;
 using BusinessModels.Entities;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
@@ -23,18 +24,27 @@ namespace OceanTech.MVC.Controllers
 
         public IActionResult Create()
         {
+            ViewBag.EthnicGroups = EmployeeConsts.EthnicGroups;
+            ViewBag.Jobs = EmployeeConsts.Jobs;
             return PartialView("_Create");
         }
 
         [HttpPost]
         public async Task<IActionResult> Create(Employee employee)
         {
-            if (ModelState.IsValid)
-            {
-                await _employeeService.CreateEmployee(employee);
-                return RedirectToAction(nameof(Index));
-            }
-            return View(employee);
+            //try
+            //{
+                
+            //}
+            //catch(Exception ex)
+            //{
+            //    return PartialView("_Create");
+
+            //}
+
+            await _employeeService.CreateEmployee(employee);
+            var employees = await _employeeService.GetEmployees();
+            return PartialView("_List", employees);
         }
 
         public async Task<IActionResult> Edit(int id)

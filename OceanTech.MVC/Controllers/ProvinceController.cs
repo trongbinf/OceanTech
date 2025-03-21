@@ -86,5 +86,11 @@ namespace OceanTech.MVC.Controllers
                 return View();
             }
         }
+        [HttpGet]
+        public async Task<JsonResult> GetAll()
+        {
+            var provinces = await _provinceService.GetProvinces();
+            return Json(provinces);
+        }
     }
 }

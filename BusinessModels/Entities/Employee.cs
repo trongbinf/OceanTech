@@ -39,5 +39,6 @@ namespace BusinessModels.Entities
         public int WardId { get; set; }
 
         public Ward Ward { get; set; }
+        public string Address { get; set; }
     }
 }

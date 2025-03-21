@@ -55,5 +55,11 @@ namespace BusinessLogicLayer.Services
             await _unitOfWork.Districts.DeleteAsync(id);
             return await _unitOfWork.CompleteAsync() > 0;
         }
+
+        public Task<IEnumerable<District>> GetDistrictsByProvinceId(int provinceId)
+        {
+            var districts = _unitOfWork.Districts.GetByDelegateAsync(d => d.ProvinceId == provinceId);
+            return districts;
+        }
     }
 }

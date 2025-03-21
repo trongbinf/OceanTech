@@ -11,6 +11,8 @@ namespace BusinessLogicLayer.Services.Interfaces
     {
         Task<IEnumerable<District>> GetDistricts();
         Task<District> GetDistrictById(int id);
+        Task<IEnumerable<District>> GetDistrictsByProvinceId(int provinceId);
+
         Task<bool> CreateDistrict(District District);
         Task<bool> UpdateDistrict(District District);
         Task<bool> DeleteDistrict(int id);

@@ -10,6 +10,8 @@ namespace BusinessLogicLayer.Services.Interfaces
     public interface IWardService
     {
         Task<IEnumerable<Ward>> GetWards();
+        Task<IEnumerable<Ward>> GetWardsByDistrictId(int districtId);
+
         Task<Ward> GetWardById(int id);
         Task<bool> CreateWard(Ward Ward);
         Task<bool> UpdateWard(Ward Ward);

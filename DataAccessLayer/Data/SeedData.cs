@@ -32,8 +32,8 @@ namespace DataAccessLayer.Data
 
             // Seed Employees
             modelBuilder.Entity<Employee>().HasData(
-                new Employee { Id = 1, FullName = "Nguyen Van A", DateOfBirth = new DateOnly(1990, 5, 10), EthnicGroup = "Kinh", Job = "Kĩ Sư", PhoneNumber = "0123456789", IdentityCard = "123456789", WardId = 1 },
-                new Employee { Id = 2, FullName = "Tran Thi B", DateOfBirth = new DateOnly(1995, 8, 15), EthnicGroup = "Kinh", Job = "Giáo viên", PhoneNumber = "0987654321", IdentityCard = "987654321", WardId = 2 }
+                new Employee { Id = 1, FullName = "Nguyen Van A", DateOfBirth = new DateOnly(1990, 5, 10), EthnicGroup = "Kinh", Job = "Kĩ Sư", PhoneNumber = "0123456789", IdentityCard = "123456789", WardId = 1 , Address = "Đường 12"},
+                new Employee { Id = 2, FullName = "Tran Thi B", DateOfBirth = new DateOnly(1995, 8, 15), EthnicGroup = "Kinh", Job = "Giáo viên", PhoneNumber = "0987654321", IdentityCard = "987654321", WardId = 2, Address = "Đường 13" }
             );
 
             // Seed Certificates

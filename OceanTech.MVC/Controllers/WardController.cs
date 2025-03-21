@@ -1,4 +1,5 @@
-﻿using BusinessLogicLayer.Services.Interfaces;
+﻿using BusinessLogicLayer.Services;
+using BusinessLogicLayer.Services.Interfaces;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -85,6 +86,12 @@ namespace OceanTech.MVC.Controllers
             {
                 return View();
             }
+        }
+        [HttpGet]
+        public async Task<JsonResult> GetWards(int districtId)
+        {
+            var wards = await _wardService.GetWardsByDistrictId(districtId);
+            return Json(wards);
         }
     }
 }

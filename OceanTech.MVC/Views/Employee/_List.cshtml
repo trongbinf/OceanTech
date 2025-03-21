@@ -1,7 +1,7 @@
 ﻿<div class="card">
-    <div class="card-body">
+    <div class="card-body" id="employeeContainer">
         <h3>Danh sách Employee</h3>
-        <button class="btn btn-primary" onclick="createEmployee">Thêm mới</button>
+        <button class="btn btn-primary" onclick="createEmployee()">Thêm mới</button>
         <table id="employeeTable" class="display">
             <thead>
                 <tr>
@@ -49,9 +49,9 @@
             }
         });
     });
-    createEmployee = function () {
+    var createEmployee = function () {
         $.get("/Employee/Create", function (data) {
-            $("#employeeTable").html(data);
+            $("#employeeContainer").html(data);
         });
     }
 </script>

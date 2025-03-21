@@ -59,5 +59,10 @@ namespace BusinessLogicLayer.Services
             await _unitOfWork.Wards.DeleteAsync(id);
             return await _unitOfWork.CompleteAsync() > 0;
         }
+
+        public async Task<IEnumerable<Ward>> GetWardsByDistrictId(int districtId)
+        {
+            return await _unitOfWork.Wards.GetByDelegateAsync(w => w.DistrictId == districtId);
+        }
     }
 }
