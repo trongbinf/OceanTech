@@ -1,0 +1,41 @@
+﻿<div class="card">
+    <div class="card-body">
+        <h3>Danh sách Tỉnh</h3>
+        <table id="provinceTable" class="display">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Tên</th>
+
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var province in Model)
+                {
+                    <tr>
+                        <td>@province.Id</td>
+                        <td>@province.Name</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function () {
+        $('#provinceTable').DataTable({
+            "language": {
+                "search": "Tìm kiếm:",
+                "lengthMenu": "Hiển thị _MENU_ dòng",
+                "info": "Hiển thị _START_ đến _END_ trong _TOTAL_ mục",
+                "paginate": {
+                    "first": "Đầu",
+                    "last": "Cuối",
+                    "next": "Tiếp",
+                    "previous": "Trước"
+                }
+            }
+        });
+    });
+</script>

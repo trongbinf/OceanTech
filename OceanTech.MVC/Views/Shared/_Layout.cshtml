@@ -67,6 +67,11 @@
     <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
     <script>
         $(document).ready(function () {
+            var defaultUrl = "/Employee/Index"; 
+            $.get(defaultUrl, function (data) {
+                $("#content").html(data);
+            });
+
             $(".nav-link").click(function (e) {
                 e.preventDefault();
                 var url = $(this).data("url");

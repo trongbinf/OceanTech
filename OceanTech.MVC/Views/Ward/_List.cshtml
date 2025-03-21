@@ -1,0 +1,47 @@
+﻿<div class="card">
+    <div class="card-body">
+        <h3>Danh sách Xã</h3>
+        <table id="wardTable" class="display">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Tên</th>
+                    <th>Huyện</th>
+                    <th>Tỉnh</th>
+
+
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var ward in Model)
+                {
+                    <tr>
+                        <td>@ward.Id</td>
+                        <td>@ward.Name</td>
+                        <td>@ward.District.Name</td>
+                        <td>@ward.District.Province.Name</td>
+
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function () {
+        $('#wardTable').DataTable({
+            "language": {
+                "search": "Tìm kiếm:",
+                "lengthMenu": "Hiển thị _MENU_ dòng",
+                "info": "Hiển thị _START_ đến _END_ trong _TOTAL_ mục",
+                "paginate": {
+                    "first": "Đầu",
+                    "last": "Cuối",
+                    "next": "Tiếp",
+                    "previous": "Trước"
+                }
+            }
+        });
+    });
+</script>

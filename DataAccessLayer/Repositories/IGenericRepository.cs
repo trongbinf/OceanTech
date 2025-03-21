@@ -12,6 +12,9 @@ namespace DataAccessLayer.Repositories
     {
         Task<IEnumerable<T>> GetAllAsync();
         Task<IEnumerable<T>> GetAllAsync(params Expression<Func<T, object>>[] includes);
+        Task<IEnumerable<T>> GetAllAsync(
+        Func<IQueryable<T>, IQueryable<T>> include = null,
+        Expression<Func<T, bool>> filter = null);
         Task<IEnumerable<T>> GetByDelegateAsync(Func<T, bool> predicate, params Expression<Func<T, object>>[] includes);
         Task<T> GetByIdAsync(int id);
         Task<T> GetByIdAsync(int id, params Expression<Func<T, object>>[] includes);

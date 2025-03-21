@@ -18,7 +18,7 @@ namespace BusinessLogicLayer.Services
 
         public async Task<IEnumerable<District>> GetDistricts()
         {
-            return await _unitOfWork.Districts.GetAllAsync();
+            return await _unitOfWork.Districts.GetAllAsync(d => d.Province);
         }
 
         public async Task<District> GetDistrictById(int id)

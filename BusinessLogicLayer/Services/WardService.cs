@@ -1,6 +1,7 @@
 ﻿using BusinessLogicLayer.Services.Interfaces;
 using BusinessModels.Entities;
 using DataAccessLayer.UnitOfWork;
+using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -17,7 +18,11 @@ namespace BusinessLogicLayer.Services
 
         public async Task<IEnumerable<Ward>> GetWards()
         {
-            return await _unitOfWork.Wards.GetAllAsync();
+            return await _unitOfWork.Wards.GetAllAsync( 
+                include: query => query.Include(o => o.District)
+                           
+                           .ThenInclude(od => od.Province)
+                           );
         }
 
         public async Task<Ward> GetWardById(int id)

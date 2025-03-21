@@ -36,6 +36,24 @@ namespace DataAccessLayer.Repositories
             }
             return await query.ToListAsync();
         }
+        public async Task<IEnumerable<T>> GetAllAsync(
+        Func<IQueryable<T>, IQueryable<T>> include = null,
+        Expression<Func<T, bool>> filter = null)
+        {
+            IQueryable<T> query = _dbSet;
+
+            if (filter != null)
+            {
+                query = query.Where(filter);
+            }
+
+            if (include != null)
+            {
+                query = include(query);
+            }
+
+            return await query.ToListAsync();
+        }
 
         public async Task<IEnumerable<T>> GetByDelegateAsync(Func<T, bool> predicate, params Expression<Func<T, object>>[] includes)
         {

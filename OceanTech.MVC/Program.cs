@@ -1,4 +1,8 @@
-﻿using DataAccessLayer.Data;
+﻿using BusinessLogicLayer.Services;
+using BusinessLogicLayer.Services.Interfaces;
+using DataAccessLayer.Data;
+using DataAccessLayer.Repositories;
+using DataAccessLayer.UnitOfWork;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 
@@ -27,6 +31,16 @@ namespace OceanTech.MVC
                     Description = "API documentation for OceanTech project"
                 });
             });
+
+            builder.Services.AddScoped<IEmployeeService, EmployeeService>();
+            builder.Services.AddScoped<IProvinceService, ProvinceService>();
+            builder.Services.AddScoped<IDistrictService, DistrictService>();
+            builder.Services.AddScoped<IWardService, WardService>();
+            builder.Services.AddScoped<ICertificateService, CertificateService>();
+
+            builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
+            builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+
 
             builder.Services.AddRazorPages().AddRazorRuntimeCompilation();
             var app = builder.Build();

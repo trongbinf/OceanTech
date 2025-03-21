@@ -1,0 +1,75 @@
+﻿@model BusinessModels.Entities.Employee
+
+@*  <div class="card">
+     <div class="card-body">
+         <form asp-action="Create" asp-controller="Employee" method="post">
+             <div class="row mb-3">
+                 <div class="col-md-6">
+                     <label class="form-label"><h5>1. Họ tên</h5></label>
+                     <input asp-for="FullName" class="form-control" />
+                 </div>
+                 <div class="col-md-3">
+                     <label class="form-label"><h5>2. Ngày sinh</h5></label>
+                     <input asp-for="DateOfBirth" type="date" class="form-control" />
+                 </div>
+             </div>
+
+             <div class="row mb-3">
+                 <div class="col-md-4">
+                     <label class="form-label"><h5>3. Dân tộc</h5></label>
+                    <input asp-for="EthnicGroup" class="form-control" />
+
+                 </div>
+                 <div class="col-md-4">
+                     <label class="form-label"><h5>4. Nghề nghiệp</h5></label>
+                    <input asp-for="Job" class="form-control" />
+                 </div>
+                 <div class="col-md-4">
+                     <label class="form-label"><h5>5. Căn cước công dân</h5></label>
+                     <input asp-for="IdentityCard" class="form-control" />
+                 </div>
+             </div>
+
+             <div class="row mb-3">
+                 <div class="col-md-6">
+                     <label class="form-label"><h5>6. Số điện thoại</h5></label>
+                     <input asp-for="PhoneNumber" class="form-control" />
+                      <div class="form-check mt-1">
+                         @* <input asp-for="HasNoPhone" class="form-check-input" type="checkbox" id="noPhone" /> *@
+                         <label class="form-check-label" for="noPhone">Không có số điện thoại</label>
+                     </div>
+                 </div>
+             </div>
+
+             <h5>7. Địa chỉ</h5>
+             <div class="row mb-3">
+                 <div class="col-md-4">
+                     <label class="form-label">Tỉnh / Thành phố</label>
+                     @Html.DropDownListFor(Model.ProvinceList, "Chọn Tỉnh / Thành phố", new { @class = "form-select" })
+                 </div>
+                 <div class="col-md-4">
+                     <label class="form-label">Quận / Huyện</label>
+                     @Html.DropDownListFor(Model.DistrictList, "Chọn Quận / Huyện", new { @class = "form-select" })
+                 </div>
+                 <div class="col-md-4">
+                     <label class="form-label">Xã / Phường</label>
+                     @Html.DropDownListFor(m => m.WardId, Model.WardList, "Chọn Xã / Phường", new { @class = "form-select" })
+                 </div>
+             </div>
+
+             <div class="mb-3">
+                 <label class="form-label">Cụ thể</label>
+                 <input asp-for="Address" class="form-control" />
+             </div>
+
+             <div class="d-flex justify-content-between">
+                 <a asp-action="Index" asp-controller="Employee">Danh sách Employee</a>
+                 <div>
+                     <button type="reset" class="btn btn-outline-danger">Hủy</button>
+                     <button type="submit" class="btn btn-primary">Xác nhận</button>
+                 </div>
+             </div>
+         </form>
+     </div>
+ </div>
+  *@

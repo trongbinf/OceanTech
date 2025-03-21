@@ -1,5 +1,6 @@
 ﻿using BusinessLogicLayer.Services.Interfaces;
 using BusinessModels.Entities;
+using DataAccessLayer.UnitOfWork;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,31 +9,39 @@ using System.Threading.Tasks;
 
 namespace BusinessLogicLayer.Services
 {
-    class EmployeeService : IEmployeeService
-    {
-        public Task<bool> CreateEmployee(Employee e)
+   public class EmployeeService : IEmployeeService
+   {
+        private readonly IUnitOfWork _unitOfWork;
+        public EmployeeService(IUnitOfWork unitOfWork)
         {
-            throw new NotImplementedException();
+            _unitOfWork = unitOfWork;
+        }
+        public async Task<bool> CreateEmployee(Employee e)
+        {
+            var result = await _unitOfWork.Employees.AddAsync(e);
+            return result;
         }
 
-        public Task<bool> DeleteEmployee(int id)
+        public async Task<bool> DeleteEmployee(int id)
         {
-            throw new NotImplementedException();
+            var result = await _unitOfWork.Employees.DeleteAsync(id);
+            return result;
         }
 
-        public Task<Employee> GetEmployeeById(int id)
+        public async Task<Employee> GetEmployeeById(int id)
         {
-            throw new NotImplementedException();
+            return await _unitOfWork.Employees.GetByIdAsync(id);
         }
 
-        public Task<IEnumerable<Employee>> GetEmployees()
+        public async Task<IEnumerable<Employee>> GetEmployees()
         {
-            throw new NotImplementedException();
+            return await _unitOfWork.Employees.GetAllAsync();
         }
 
         public Task<bool> UpdateEmployee(Employee e)
         {
-            throw new NotImplementedException();
+            var result = _unitOfWork.Employees.UpdateAsync(e);
+            return result;
         }
     }
 }
