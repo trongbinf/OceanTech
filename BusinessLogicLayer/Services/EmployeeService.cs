@@ -1,6 +1,7 @@
 ﻿using BusinessLogicLayer.Services.Interfaces;
 using BusinessModels.Entities;
 using DataAccessLayer.UnitOfWork;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -30,12 +31,29 @@ namespace BusinessLogicLayer.Services
 
         public async Task<Employee> GetEmployeeById(int id)
         {
-            return await _unitOfWork.Employees.GetByIdAsync(id);
+            var allEmployees = await _unitOfWork.Employees.GetAllAsync(
+                include: query => query
+                            .Include(o => o.Certificates)
+                            .Include(o => o.Ward)
+
+                               .ThenInclude(od => od.District)
+                               .ThenInclude(d => d.Province)
+
+                );
+            return allEmployees.FirstOrDefault(e => e.Id == id);
         }
 
         public async Task<IEnumerable<Employee>> GetEmployees()
         {
-            return await _unitOfWork.Employees.GetAllAsync();
+            return await _unitOfWork.Employees.GetAllAsync(
+                include: query => query
+                            .Include(o => o.Certificates)
+                            .Include(o => o.Ward)
+                                
+                               .ThenInclude(od => od.District)
+                               .ThenInclude(d => d.Province)
+                          
+                );
         }
 
         public Task<bool> UpdateEmployee(Employee e)

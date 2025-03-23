@@ -146,11 +146,22 @@
         }
 
         $("#createEmployeeForm").submit(function (e) {
-            e.preventDefault(); 
+            e.preventDefault();
 
-            
+            $.ajax({
+                type: "POST",
+                url: "/Employee/Create",
+                data: $(this).serialize(),
+                success: function (response) {
+                    loadEmployeeList();
 
-            loadEmployeeList();
+                },
+                error: function (xhr) {
+                    alert("Lỗi: " + xhr.responseJSON?.message || "Không thể tạo nhân viên.");
+                }
+            });
+
+            // loadEmployeeList();
         });
         
     });

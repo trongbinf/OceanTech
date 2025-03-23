@@ -265,7 +265,7 @@ namespace DataAccessLayer.Migrations
             modelBuilder.Entity("BusinessModels.Entities.Certificate", b =>
                 {
                     b.HasOne("BusinessModels.Entities.Employee", "Employee")
-                        .WithMany()
+                        .WithMany("Certificates")
                         .HasForeignKey("EmployeeId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -316,6 +316,11 @@ namespace DataAccessLayer.Migrations
             modelBuilder.Entity("BusinessModels.Entities.District", b =>
                 {
                     b.Navigation("Wards");
+                });
+
+            modelBuilder.Entity("BusinessModels.Entities.Employee", b =>
+                {
+                    b.Navigation("Certificates");
                 });
 
             modelBuilder.Entity("BusinessModels.Entities.Province", b =>

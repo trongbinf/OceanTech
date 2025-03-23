@@ -1,0 +1,167 @@
+﻿@model BusinessModels.Entities.Employee
+
+<div class="card">
+    <div class="card-body">
+        <form id="editEmployeeForm" asp-action="Edit" asp-controller="Employee" method="post">
+            <input type="hidden" asp-for="Id" />
+
+            <div class="row mb-3">
+                <div class="col-md-6">
+                    <label class="form-label"><h5>1. Họ tên</h5></label>
+                    <input asp-for="FullName" class="form-control" />
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label"><h5>2. Ngày sinh</h5></label>
+                    <input asp-for="DateOfBirth" type="date" class="form-control" />
+                </div>
+            </div>
+
+            <div class="row mb-3">
+                <div class="col-md-4">
+                    <label class="form-label"><h5>3. Dân tộc</h5></label>
+                    <select asp-for="EthnicGroup" class="form-control">
+                        <option value="">Chọn dân tộc</option>
+                        @foreach (var ethnic in ViewBag.EthnicGroups as List<string>)
+                        {
+                            <option value="@ethnic">@ethnic</option>
+                        }
+                    </select>
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label"><h5>4. Nghề nghiệp</h5></label>
+                    <select asp-for="Job" class="form-control">
+                        <option value="">Chọn nghề nghiệp</option>
+                        @foreach (var job in ViewBag.Jobs as List<string>)
+                        {
+                            <option value="@job">@job</option>
+                        }
+                    </select>
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label"><h5>5. Căn cước công dân</h5></label>
+                    <input asp-for="IdentityCard" class="form-control" />
+                </div>
+            </div>
+
+            <div class="row mb-3">
+                <div class="col-md-6">
+                    <label class="form-label"><h5>6. Số điện thoại</h5></label>
+                    <input asp-for="PhoneNumber" class="form-control" />
+                </div>
+            </div>
+
+            <h5>7. Địa chỉ</h5>
+            <div class="row mb-3">
+                <div class="col-md-4">
+                    <label class="form-label">Tỉnh / Thành phố</label>
+                    <select id="province" class="form-control">
+                        <option value="">Chọn Tỉnh / Thành phố</option>
+                    </select>
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label">Quận / Huyện</label>
+                    <select id="district" class="form-control">
+                        <option value="">Chọn Quận / Huyện</option>
+                    </select>
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label">Xã / Phường</label>
+                    <select id="ward" asp-for="WardId" class="form-control">
+                        <option value="">Chọn Xã / Phường</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Cụ thể</label>
+                <input asp-for="Address" class="form-control" />
+            </div>
+
+            <div class="d-flex justify-content-between">
+                <a href="javascript:void(0);" onclick="loadEmployeeList()">Danh sách Employee</a>
+                <div>
+                    <button type="reset" class="btn btn-outline-danger">Hủy</button>
+                    <button type="submit" class="btn btn-primary">Xác nhận</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function () {
+        loadProvinces(@Model.Ward.District.ProvinceId, @Model.Ward.DistrictId, @Model.WardId);
+
+        function loadProvinces(selectedProvince, selectedDistrict, selectedWard) {
+            $.getJSON("/Province/GetAll", function (data) {
+                $("#province").html('<option value="">Chọn Tỉnh / Thành phố</option>');
+                $.each(data, function (index, item) {
+                    $("#province").append($('<option>', { value: item.id, text: item.name }));
+                });
+
+                if (selectedProvince) {
+                    $("#province").val(selectedProvince).trigger("change");
+                }
+            });
+
+            $("#province").change(function () {
+                var provinceId = $(this).val();
+                $("#district").html('<option value="">Chọn Quận / Huyện</option>').prop("disabled", true);
+                $("#ward").html('<option value="">Chọn Xã / Phường</option>').prop("disabled", true);
+
+                if (provinceId) {
+                    $.getJSON("/District/GetDistricts", { provinceId: provinceId }, function (data) {
+                        $("#district").prop("disabled", false);
+                        $.each(data, function (index, item) {
+                            $("#district").append($('<option>', { value: item.id, text: item.name }));
+                        });
+
+                        if (selectedDistrict) {
+                            $("#district").val(selectedDistrict).trigger("change");
+                        }
+                    });
+                }
+            });
+
+            $("#district").change(function () {
+                var districtId = $(this).val();
+                $("#ward").html('<option value="">Chọn Xã / Phường</option>').prop("disabled", true);
+
+                if (districtId) {
+                    $.getJSON("/Ward/GetWards", { districtId: districtId }, function (data) {
+                        $("#ward").prop("disabled", false);
+                        $.each(data, function (index, item) {
+                            $("#ward").append($('<option>', { value: item.id, text: item.name }));
+                        });
+
+                        if (selectedWard) {
+                            $("#ward").val(selectedWard);
+                        }
+                    });
+                }
+            });
+        }
+
+        $("#editEmployeeForm").submit(function (e) {
+            e.preventDefault();
+
+            $.ajax({
+                type: "POST",
+                url: "/Employee/Edit",
+                data: $(this).serialize(),
+                success: function (response) {
+                    loadEmployeeList();
+                },
+                error: function (xhr) {
+                    alert("Lỗi: " + xhr.responseJSON?.message || "Không thể cập nhật nhân viên.");
+                }
+            });
+        });
+    });
+
+    function loadEmployeeList() {
+        $.get("/Employee/Index", function (data) {
+            $("#employeeContainer").html(data);
+        });
+    }
+</script>

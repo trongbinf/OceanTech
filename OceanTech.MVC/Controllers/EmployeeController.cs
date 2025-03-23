@@ -2,6 +2,7 @@
 using BusinessModels.Constants;
 using BusinessModels.Entities;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using System.Threading.Tasks;
 
 namespace OceanTech.MVC.Controllers
@@ -41,7 +42,7 @@ namespace OceanTech.MVC.Controllers
             //    return PartialView("_Create");
 
             //}
-
+            employee.Certificates = new List<Certificate>();
             await _employeeService.CreateEmployee(employee);
             var employees = await _employeeService.GetEmployees();
             return PartialView("_List", employees);
@@ -54,7 +55,9 @@ namespace OceanTech.MVC.Controllers
             {
                 return NotFound();
             }
-            return View(employee);
+            ViewBag.EthnicGroups = EmployeeConsts.EthnicGroups;
+            ViewBag.Jobs = EmployeeConsts.Jobs;
+            return PartialView("_Edit",employee);
         }
 
 
@@ -91,6 +94,15 @@ namespace OceanTech.MVC.Controllers
         {
             await _employeeService.DeleteEmployee(id);
             return RedirectToAction(nameof(Index));
+        }
+        public async Task<IActionResult> Detail(int id)
+        {
+            var employee = await _employeeService.GetEmployeeById(id);
+            if (employee == null)
+            {
+                return NotFound();
+            }
+            return PartialView("_Detail",employee);
         }
     }
 }

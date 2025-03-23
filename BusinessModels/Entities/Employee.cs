@@ -40,5 +40,6 @@ namespace BusinessModels.Entities
 
         public Ward Ward { get; set; }
         public string Address { get; set; }
+        public List<Certificate> Certificates { get; set; } = new List<Certificate>();
     }
 }

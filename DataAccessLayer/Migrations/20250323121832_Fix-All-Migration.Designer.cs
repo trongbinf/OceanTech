@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DataAccessLayer.Migrations
 {
     [DbContext(typeof(OceanTechDbContext))]
-    [Migration("20250321015120_add-address")]
-    partial class addaddress
+    [Migration("20250323121832_Fix-All-Migration")]
+    partial class FixAllMigration
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -268,7 +268,7 @@ namespace DataAccessLayer.Migrations
             modelBuilder.Entity("BusinessModels.Entities.Certificate", b =>
                 {
                     b.HasOne("BusinessModels.Entities.Employee", "Employee")
-                        .WithMany()
+                        .WithMany("Certificates")
                         .HasForeignKey("EmployeeId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -319,6 +319,11 @@ namespace DataAccessLayer.Migrations
             modelBuilder.Entity("BusinessModels.Entities.District", b =>
                 {
                     b.Navigation("Wards");
+                });
+
+            modelBuilder.Entity("BusinessModels.Entities.Employee", b =>
+                {
+                    b.Navigation("Certificates");
                 });
 
             modelBuilder.Entity("BusinessModels.Entities.Province", b =>

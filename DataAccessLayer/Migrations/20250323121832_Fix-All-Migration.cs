@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace DataAccessLayer.Migrations
 {
     /// <inheritdoc />
-    public partial class Initial : Migration
+    public partial class FixAllMigration : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -78,7 +78,8 @@ namespace DataAccessLayer.Migrations
                     Job = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
                     PhoneNumber = table.Column<string>(type: "nvarchar(15)", maxLength: 15, nullable: false),
                     IdentityCard = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    WardId = table.Column<int>(type: "int", nullable: false)
+                    WardId = table.Column<int>(type: "int", nullable: false),
+                    Address = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -149,11 +150,11 @@ namespace DataAccessLayer.Migrations
 
             migrationBuilder.InsertData(
                 table: "Employees",
-                columns: new[] { "Id", "DateOfBirth", "EthnicGroup", "FullName", "IdentityCard", "Job", "PhoneNumber", "WardId" },
+                columns: new[] { "Id", "Address", "DateOfBirth", "EthnicGroup", "FullName", "IdentityCard", "Job", "PhoneNumber", "WardId" },
                 values: new object[,]
                 {
-                    { 1, new DateOnly(1990, 5, 10), "Kinh", "Nguyen Van A", "123456789", "Kĩ Sư", "0123456789", 1 },
-                    { 2, new DateOnly(1995, 8, 15), "Kinh", "Tran Thi B", "987654321", "Giáo viên", "0987654321", 2 }
+                    { 1, "Đường 12", new DateOnly(1990, 5, 10), "Kinh", "Nguyen Van A", "123456789", "Kĩ Sư", "0123456789", 1 },
+                    { 2, "Đường 13", new DateOnly(1995, 8, 15), "Kinh", "Tran Thi B", "987654321", "Giáo viên", "0987654321", 2 }
                 });
 
             migrationBuilder.InsertData(

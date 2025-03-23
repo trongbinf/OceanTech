@@ -38,7 +38,7 @@ namespace DataAccessLayer.Data
                 .OnDelete(DeleteBehavior.Cascade);
             modelBuilder.Entity<Certificate>()
                .HasOne(c => c.Employee)
-               .WithMany()
+               .WithMany(e => e.Certificates)
                .HasForeignKey(c => c.EmployeeId)
                .OnDelete(DeleteBehavior.Cascade); 
 
