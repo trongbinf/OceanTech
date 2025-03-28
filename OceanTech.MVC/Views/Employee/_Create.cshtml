@@ -95,6 +95,7 @@
          </form>
      </div>
  </div>
+ <div id="error-message" class="alert alert-danger" style="display:none;"></div>
 
 <script>
     $(document).ready(function () {
@@ -147,24 +148,31 @@
 
         $("#createEmployeeForm").submit(function (e) {
             e.preventDefault();
-
             $.ajax({
                 type: "POST",
                 url: "/Employee/Create",
                 data: $(this).serialize(),
                 success: function (response) {
-                    loadEmployeeList();
+                    if ($(response).find("#employeeContainer").length) {
+                        loadEmployeeList();
 
+                    } else {
+                        
+                        $("#error-message").text("Không thể tạo nhân viên, vui lòng kiểm tra lại thông tin.").show();
+                    }
                 },
                 error: function (xhr) {
-                    alert("Lỗi: " + xhr.responseJSON?.message || "Không thể tạo nhân viên.");
+                    $("#error-message").text(xhr.responseJSON?.message || "Lỗi: Không thể tạo nhân viên.").show();
                 }
             });
-
-            // loadEmployeeList();
         });
         
     });
+    var editEmployee = function (id) {
+        $.get("/Employee/Edit/" + id, function (data) {
+            $("#employeeContainer").html(data);
+        });
+    }
     function loadEmployeeList() {
         $.get("/Employee/Index", function (data) {
             $("#employeeContainer").html(data);

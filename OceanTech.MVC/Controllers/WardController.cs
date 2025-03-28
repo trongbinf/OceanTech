@@ -36,9 +36,23 @@ namespace OceanTech.MVC.Controllers
         [HttpPost]
         public async Task<ActionResult> Create(Ward ward)
         {
-            await _wardService.CreateWard(ward);
-            var wards = await _wardService.GetWards();
-            return PartialView("_List", wards);
+            try
+            {
+                ModelState.Remove("District");
+                ModelState.Remove("Employees");
+                if (!ModelState.IsValid)
+                {
+                    return BadRequest(new { message = "Dữ liệu không hợp lệ", errors = ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage) });
+                }
+
+                await _wardService.CreateWard(ward);
+                var wards = await _wardService.GetWards();
+                return PartialView("_List", wards);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = "Lỗi hệ thống", details = ex.Message });
+            }
         }
 
         // GET: WardController/Edit/5

@@ -47,10 +47,15 @@ namespace OceanTech.MVC.Controllers
             ModelState.Remove("Ward");
 
             var employeeExist = await _employeeService.GetEmployeeByIdentityCard(employee.IdentityCard);
-            if (ModelState.IsValid && employeeExist == null)
+            if (!ModelState.IsValid)
             {
-                await _employeeService.CreateEmployee(employee);
+                return BadRequest(new { message = "Dữ liệu nhập không hợp lệ!" });
             }
+            if(employeeExist != null)
+            {
+                return BadRequest(new { message = "Số CCCD đã tồn tại!" });
+            }
+            await _employeeService.CreateEmployee(employee);
             var employees = await _employeeService.GetEmployees();
 
             return PartialView("_List", employees);

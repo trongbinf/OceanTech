@@ -39,18 +39,30 @@ namespace OceanTech.MVC.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Create(Province province)
         {
-            //try
-            //{
-            //    return RedirectToAction(nameof(Index));
-            //}
-            //catch
-            //{
-            //    return View();
-            //}
+            try
+            {
+                ModelState.Remove("Districts");
+                if (!ModelState.IsValid)
+                {
+                    return BadRequest(new { message = "Dữ liệu không hợp lệ", errors = ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage) });
+                }
 
-            await _provinceService.CreateProvince(province);
-            var provinces = await _provinceService.GetProvinces();
-            return PartialView("_List", provinces);
+                // Kiểm tra trùng tên quận/huyện
+                var existingDistrict = await _provinceService.GetProvinceByName(province.Name);
+                if (existingDistrict != null)
+                {
+                    return BadRequest(new { message = "Tên tỉnh/thành phố đã tồn tại!" });
+                }
+
+                await _provinceService.CreateProvince(province);
+                var provinces = await _provinceService.GetProvinces();
+                return PartialView("_List", provinces);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = "Lỗi hệ thống", details = ex.Message });
+            }
+
         }
 
         // GET: ProvinceController/Edit/5

@@ -10,7 +10,16 @@
     <!-- DataTables CSS -->
     <link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/jquery.dataTables.min.css">
     <link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.4.2/css/buttons.dataTables.min.css">
-
+    <style>
+        #loadingSpinner {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 1050;
+        }
+    </style>
 </head>
 <body>
     <header>
@@ -50,10 +59,15 @@
                 <a class="nav-link" data-url="/Ward/Index" href="#">Danh mục Xã</a>
             </li>
         </ul>
-
+        <div id="loadingSpinner">
+            <div class="spinner-border text-primary" role="status">
+                <span class="visually-hidden">Loading...</span>
+            </div>
+        </div>
         <div id="content">
             @RenderBody()
         </div>
+
     </div>
 
     @* <footer class="border-top footer text-muted">
@@ -71,10 +85,18 @@
     <script src="https://cdn.datatables.net/buttons/2.4.2/js/buttons.html5.min.js"></script>
     <script>
         $(document).ready(function () {
-            var defaultUrl = "/Employee/Index"; 
-            $.get(defaultUrl, function (data) {
-                $("#content").html(data);
-            });
+            var defaultUrl = "/Employee/Index";
+
+            function loadContent(url) {
+                $("#loadingSpinner").show(); 
+                $.get(url, function (data) {
+                    $("#content").html(data);
+                }).always(function () {
+                    $("#loadingSpinner").hide(); 
+                });
+            }
+
+            loadContent(defaultUrl);
 
             $(".nav-link").click(function (e) {
                 e.preventDefault();
@@ -83,9 +105,7 @@
                 $(".nav-link").removeClass("active");
                 $(this).addClass("active");
 
-                $.get(url, function (data) {
-                    $("#content").html(data);
-                });
+                loadContent(url);
             });
         });
     </script>

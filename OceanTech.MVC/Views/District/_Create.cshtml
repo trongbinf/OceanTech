@@ -45,7 +45,13 @@
 
                 },
                 error: function (xhr) {
-                    alert("Lỗi: " + xhr.responseJSON?.message || "Không thể tạo nhân viên.");
+                    if (xhr.responseJSON) {
+                        let message = xhr.responseJSON.message || "Đã xảy ra lỗi!";
+                        let details = xhr.responseJSON.details ? "\nChi tiết: " + xhr.responseJSON.details : "";
+                        alert("❌ Lỗi: " + message + details);
+                    } else {
+                        alert("❌ Không thể tạo quận/huyện. Lỗi không xác định.");
+                    }
                 }
             });
 

@@ -37,9 +37,23 @@ namespace OceanTech.MVC.Controllers
         [HttpPost]
         public async Task<ActionResult> Create(District district)
         {
-            await _districtService.CreateDistrict(district);
-            var districts = await _districtService.GetDistricts();
-            return PartialView("_List", districts);
+            try
+            {
+                ModelState.Remove("Province");
+                ModelState.Remove("Wards");
+                if (!ModelState.IsValid)
+                {
+                    return BadRequest(new { message = "Dữ liệu không hợp lệ", errors = ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage) });
+                }
+
+                await _districtService.CreateDistrict(district);
+                var districts = await _districtService.GetDistricts();
+                return PartialView("_List", districts);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = "Lỗi hệ thống", details = ex.Message });
+            }
         }
 
         // GET: DistrictController/Edit/5
