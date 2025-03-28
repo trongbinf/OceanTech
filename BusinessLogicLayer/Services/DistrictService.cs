@@ -25,10 +25,20 @@ namespace BusinessLogicLayer.Services
         {
             return await _unitOfWork.Districts.GetByIdAsync(id);
         }
+        public async Task<District> GetDistrictByName(string name)
+        {
+            return (await _unitOfWork.Districts.GetByDelegateAsync(p => p.Name == name)).FirstOrDefault();
+        }
 
         public async Task<bool> CreateDistrict(District district)
         {
             if (district == null) return false;
+            var existingDistrict = await _unitOfWork.Districts.GetByDelegateAsync(d => d.ProvinceId == district.ProvinceId && d.Name == district.Name);
+
+            if (existingDistrict.ToList().Count > 0)
+            {
+                return false;
+            }
 
             await _unitOfWork.Districts.AddAsync(district);
             return await _unitOfWork.CompleteAsync() > 0;

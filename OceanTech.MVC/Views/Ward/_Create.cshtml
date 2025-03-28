@@ -1,0 +1,82 @@
+﻿@model BusinessModels.Entities.Ward
+
+<div class="card">
+    <div class="card-body">
+        <h5>Thêm Xã / Phường</h5>
+        <form id="createWardForm">
+            <div class="mb-3">
+                <label class="form-label">Tỉnh / Thành phố</label>
+                <select id="province" class="form-control">
+                    <option value="">Chọn Tỉnh / Thành phố</option>
+                </select>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Quận / Huyện</label>
+                <select id="district" asp-for="DistrictId" class="form-control">
+                    <option value="">Chọn Quận / Huyện</option>
+                </select>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Tên xã/phường</label>
+                <input asp-for="Name" class="form-control" required />
+            </div>
+            <div class="d-flex justify-content-between">
+                <a href="javascript:void(0);" onclick="loadWardList()">Danh sách Xã / Phường</a>
+                <div>
+                    <a href="javascript:void(0);" onclick="loadWardList()" class="btn btn-outline-danger">Hủy</a>
+                    <button type="submit" class="btn btn-primary">Xác nhận</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function () {
+        loadProvinces();
+
+        $("#district").prop("disabled", true);
+
+        $("#province").change(function () {
+            var provinceId = $(this).val();
+            $("#district").html('<option value="">Chọn Quận / Huyện</option>').prop("disabled", true);
+
+            if (provinceId) {
+                $.getJSON("District/GetDistricts", { provinceId: provinceId }, function (data) {
+                    if (data.length > 0) {
+                        $("#district").prop("disabled", false);
+                        $.each(data, function (index, item) {
+                            $("#district").append($('<option>', { value: item.id, text: item.name }));
+                        });
+                    }
+                });
+            }
+        });
+
+        function loadProvinces() {
+            $.getJSON("/Province/GetAll", function (data) {
+                $.each(data, function (index, item) {
+                    $("#province").append($('<option>', { value: item.id, text: item.name }));
+                });
+            });
+        }
+
+        $("#createWardForm").submit(function (e) {
+            e.preventDefault();
+
+            $.ajax({
+                type: "POST",
+                url: "/Ward/Create",
+                data: $(this).serialize(),
+                success: function () {
+                    loadWardList();
+                }
+            });
+        });
+        function loadWardList() {
+            $.get("/Ward/Index", function (data) {
+                $("#wardContainer").html(data);
+            });
+        }
+    });
+</script>

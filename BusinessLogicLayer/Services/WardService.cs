@@ -27,7 +27,11 @@ namespace BusinessLogicLayer.Services
 
         public async Task<Ward> GetWardById(int id)
         {
-            return await _unitOfWork.Wards.GetByIdAsync(id);
+            return await _unitOfWork.Wards.GetByIdAsync(id, w => w.District, w => w.District.Province);
+        }
+        public async Task<Ward> GetWardByName(string name)
+        {
+            return (await _unitOfWork.Wards.GetByDelegateAsync(w => w.Name == name, w => w.District, w => w.District.Province)).FirstOrDefault();
         }
 
         public async Task<bool> CreateWard(Ward ward)

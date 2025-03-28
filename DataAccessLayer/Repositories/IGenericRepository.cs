@@ -27,5 +27,6 @@ namespace DataAccessLayer.Repositories
             int pageNumber = 1,
             int pageSize = 10
             );
+        Task<bool> AddRangeAsync(List<T> entities);
     }
 }

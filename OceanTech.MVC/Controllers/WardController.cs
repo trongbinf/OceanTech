@@ -1,5 +1,6 @@
 ﻿using BusinessLogicLayer.Services;
 using BusinessLogicLayer.Services.Interfaces;
+using BusinessModels.Entities;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -28,43 +29,46 @@ namespace OceanTech.MVC.Controllers
         // GET: WardController/Create
         public ActionResult Create()
         {
-            return View();
+            return PartialView("_Create");
         }
 
         // POST: WardController/Create
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Create(IFormCollection collection)
+        public async Task<ActionResult> Create(Ward ward)
         {
-            try
-            {
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return View();
-            }
+            await _wardService.CreateWard(ward);
+            var wards = await _wardService.GetWards();
+            return PartialView("_List", wards);
         }
 
         // GET: WardController/Edit/5
-        public ActionResult Edit(int id)
+        public async Task<ActionResult> Edit(int id)
         {
-            return View();
+            var ward = await  _wardService.GetWardById(id);
+            if (ward == null)
+            {
+                return NotFound();
+            }
+            return PartialView("_Edit", ward);
         }
 
         // POST: WardController/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit(int id, IFormCollection collection)
+        public async Task<ActionResult> Edit(int id, Ward ward)
         {
-            try
+            if(id != ward.Id)
             {
-                return RedirectToAction(nameof(Index));
+                return BadRequest();
             }
-            catch
+            ModelState.Remove("District");
+            ModelState.Remove("Employees");
+            if(ModelState.IsValid)
             {
-                return View();
+                await _wardService.UpdateWard(ward);
             }
+            var wards = await _wardService.GetWards();
+            return PartialView("_List", wards);
         }
 
         // GET: WardController/Delete/5
@@ -74,18 +78,12 @@ namespace OceanTech.MVC.Controllers
         }
 
         // POST: WardController/Delete/5
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Delete(int id, IFormCollection collection)
+        [HttpPost, ActionName("Delete")]
+        public async Task<ActionResult> DeleteConfirmed(int id)
         {
-            try
-            {
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return View();
-            }
+            await _wardService.DeleteWard(id);
+            var wards = await _wardService.GetWards();
+            return PartialView("_List", wards);
         }
         [HttpGet]
         public async Task<JsonResult> GetWards(int districtId)

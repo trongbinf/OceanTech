@@ -1,5 +1,6 @@
 ﻿using BusinessLogicLayer.Services;
 using BusinessLogicLayer.Services.Interfaces;
+using BusinessModels.Entities;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -26,67 +27,68 @@ namespace OceanTech.MVC.Controllers
         }
 
         // GET: DistrictController/Create
+        // GET: DistrictController/Create
         public ActionResult Create()
         {
-            return View();
+            return PartialView("_Create");
         }
 
         // POST: DistrictController/Create
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Create(IFormCollection collection)
+        public async Task<ActionResult> Create(District district)
         {
-            try
-            {
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return View();
-            }
+            await _districtService.CreateDistrict(district);
+            var districts = await _districtService.GetDistricts();
+            return PartialView("_List", districts);
         }
 
         // GET: DistrictController/Edit/5
-        public ActionResult Edit(int id)
+        public async Task<ActionResult> Edit(int id)
         {
-            return View();
+            var district = await _districtService.GetDistrictById(id);
+            if (district == null)
+            {
+                return NotFound();
+            }
+            return PartialView("_Edit", district);
         }
 
         // POST: DistrictController/Edit/5
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Edit(int id, IFormCollection collection)
+        public async Task<ActionResult> Edit(int id, District district)
         {
-            try
+            if (id != district.Id)
             {
-                return RedirectToAction(nameof(Index));
+                return BadRequest();
             }
-            catch
-            {
-                return View();
-            }
-        }
+            ModelState.Remove("Wards");
+            ModelState.Remove("Province");
 
-        // GET: DistrictController/Delete/5
-        public ActionResult Delete(int id)
-        {
-            return View();
+            if (ModelState.IsValid)
+            {
+                await _districtService.UpdateDistrict(district);
+            }
+            var districts = await _districtService.GetDistricts();
+            return PartialView("_List", districts);
         }
 
         // POST: DistrictController/Delete/5
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Delete(int id, IFormCollection collection)
+        [HttpPost, ActionName("Delete")]
+        public async Task<ActionResult> DeleteConfirmed(int id)
         {
-            try
-            {
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return View();
-            }
+            await _districtService.DeleteDistrict(id);
+            var districts = await _districtService.GetDistricts();
+            return PartialView("_List", districts);
         }
+
+        // API: Get districts by ProvinceId
+        [HttpGet]
+        public async Task<JsonResult> GetByProvince(int provinceId)
+        {
+            var districts = await _districtService.GetDistrictsByProvinceId(provinceId);
+            return Json(districts);
+        }
+
         [HttpGet]
         public async Task<JsonResult> GetDistricts(int provinceId)
         {
@@ -95,3 +97,4 @@ namespace OceanTech.MVC.Controllers
         }
     }
 }
+

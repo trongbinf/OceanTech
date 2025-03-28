@@ -128,6 +128,11 @@ namespace DataAccessLayer.Repositories
                 PageSize = pageSize
             };
         }
+        public async Task<bool> AddRangeAsync(List<T> entities)
+        {
+            await _dbSet.AddRangeAsync(entities);
+            return await _context.SaveChangesAsync() > 0;
+        }
     }
     
 }

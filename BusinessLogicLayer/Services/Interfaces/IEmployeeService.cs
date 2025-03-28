@@ -11,7 +11,10 @@ namespace BusinessLogicLayer.Services.Interfaces
     {
         Task<IEnumerable<Employee>> GetEmployees();
         Task<Employee> GetEmployeeById(int id);
+        Task<Employee> GetEmployeeByIdentityCard(string id);
+
         Task<bool> CreateEmployee(Employee e);
+        Task<bool> AddRangeEmployee(List<Employee> employees);
         Task<bool> UpdateEmployee(Employee e);
         Task<bool> DeleteEmployee(int id);
     }

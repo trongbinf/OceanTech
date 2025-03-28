@@ -1,0 +1,67 @@
+﻿@model BusinessModels.Entities.District
+
+<div class="card">
+    <div class="card-body">
+        <form id="createDistrictForm" asp-action="Create" asp-controller="District" method="post">
+            <div class="row mb-3">
+                <div class="col-md-6">
+                    <label class="form-label"><h5>Tên Quận / Huyện</h5></label>
+                    <input asp-for="Name" class="form-control" />
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label">Tỉnh / Thành phố</label>
+                    @* dropdown for province *@
+                    <select id="province" class="form-control" asp-for="ProvinceId">
+                        <option value="">Chọn Tỉnh / Thành phố</option>
+                    </select>
+                </div>
+
+            </div>
+
+
+            <div class="d-flex justify-content-between">
+                <a href="javascript:void(0);" onclick="loadDistrictList()">Danh sách Quận / Huyện</a>
+                <div>
+                    <a href="javascript:void(0);" onclick="loadDistrictList()" class="btn btn-outline-danger">Hủy</a>
+                    <button type="submit" class="btn btn-primary">Xác nhận</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function () {
+        loadProvinces();
+        $("#createDistrictForm").submit(function (e) {
+            e.preventDefault();
+
+            $.ajax({
+                type: "POST",
+                url: "/District/Create",
+                data: $(this).serialize(),
+                success: function (response) {
+                    loadDistrictList();
+
+                },
+                error: function (xhr) {
+                    alert("Lỗi: " + xhr.responseJSON?.message || "Không thể tạo nhân viên.");
+                }
+            });
+
+        });
+
+    });
+    function loadDistrictList() {
+        $.get("/District/Index", function (data) {
+            $("#districtContainer").html(data);
+        });
+    }
+    function loadProvinces() {
+        $.getJSON("/Province/GetAll", function (data) {
+            $.each(data, function (index, item) {
+                $("#province").append($('<option>', { value: item.id, text: item.name }));
+            });
+        });
+    }
+</script>

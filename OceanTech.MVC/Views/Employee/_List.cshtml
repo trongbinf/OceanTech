@@ -1,7 +1,8 @@
 ﻿<div class="card">
     <div class="card-body" id="employeeContainer">
         <h3>Danh sách Employee</h3>
-        <button class="btn btn-primary" onclick="createEmployee()">Thêm mới</button>
+        <button class="btn btn-outline-primary m-2" onclick="createEmployee()">Thêm mới</button>
+        <button class="btn btn-outline-success m-2" onclick="$('#importExcelModal').modal('show')">Thêm bằng Excel</button>
         <table id="employeeTable" class="display">
             <thead>
                 <tr>
@@ -34,8 +35,10 @@
 
                         <td>@(employee.Address + ", " + employee.Ward.Name + ", " + employee.Ward.District.Name + ", " + employee.Ward.District.Province.Name)</td>
                         <td>
-                            <a class="" onclick="viewEmployee('@employee.Id')">Chi tiết</a> |
-                            <a class="" onclick="editEmployee('@employee.Id')">Chỉnh sửa</a>
+                            <a href="javascript:void(0);" onclick="viewEmployee('@employee.Id')">Văn bằng</a> |
+                            <a href="javascript:void(0);" onclick="editEmployee('@employee.Id')">Chỉnh sửa</a> |
+                            <a href="javascript:void(0);" onclick="deleteEmployee('@employee.Id')">Xóa</a>
+
 
                         </td>
                     </tr>
@@ -45,10 +48,38 @@
         </table>
     </div>
 </div>
-
+<!-- Modal Upload Excel -->
+<div class="modal fade" id="importExcelModal" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Nhập Employee từ Excel</h5>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <input type="file" id="fileExcel" class="form-control">
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" onclick="importExcel()">Nhập</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Hủy</button>
+            </div>
+        </div>
+    </div>
+</div>
 <script>
     $(document).ready(function () {
         $('#employeeTable').DataTable({
+            dom: '<"top"lfB>rt<"bottom"ip>',
+            buttons: [
+                {
+                    extend: 'excelHtml5',
+                    text: 'Xuất Excel',
+                    title: 'Danh sách Employee',
+                    exportOptions: {
+                        columns: ':not(:last-child)' 
+                    }
+                }
+            ],
             "language": {
                 "search": "Tìm kiếm:",
                 "lengthMenu": "Hiển thị _MENU_ dòng",
@@ -59,9 +90,14 @@
                     "next": "Tiếp",
                     "previous": "Trước"
                 }
-            }
+            },
+            "columnDefs": [
+                { "searchable": false, "targets": -1 }
+            ]
         });
+        $('.dt-buttons button').addClass('mx-4');
     });
+
     var createEmployee = function () {
         $.get("/Employee/Create", function (data) {
             $("#employeeContainer").html(data);
@@ -77,11 +113,74 @@
             $("#employeeContainer").html(data);
         });
     }
+    var deleteEmployee = function (id) {
+        if (confirm("Bạn có chắc chắn muốn xóa Employee này không?")) {
+            $.ajax({
+                url: "/Employee/Delete/" + id,
+                type: "POST",
+                success: function (response) {
+                    alert("Xóa thành công!");
+                    location.reload();
+                },
+                error: function () {
+                    alert("Xóa không thành công. Vui lòng thử lại!");
+                }
+            });
+        }
+    };
+    function importExcel() {
+        var fileInput = document.getElementById("fileExcel");
+        if (fileInput.files.length === 0) {
+            alert("Vui lòng chọn file Excel!");
+            return;
+        }
+
+        var formData = new FormData();
+        formData.append("file", fileInput.files[0]);
+
+        $.ajax({
+            url: "/Employee/ImportExcel",
+            type: "POST",
+            data: formData,
+            contentType: false,
+            processData: false,
+            success: function (response) {
+                if (response.success) {
+                    alert("Import thành công! Số bản ghi đã thêm: " + response.count);
+                    location.reload();
+                } else {
+                    alert("Import thất bại:\n" + response.message);
+                }
+            },
+            error: function (xhr, status, error) {
+                var errorMessage = "Lỗi khi import Excel:\n";
+
+                if (xhr.responseJSON && xhr.responseJSON.message) {
+                    errorMessage += xhr.responseJSON.message;
+                }
+                else if (xhr.responseText) {
+                    errorMessage += xhr.responseText;
+                }
+                else {
+                    errorMessage += "Không thể kết nối đến server. Vui lòng thử lại!";
+                }
+
+                alert(errorMessage);
+            }
+        });
+
+        $('[data-dismiss="modal"]').click(function () {
+            $('#importExcelModal').modal('hide');
+        });
+
+        $('#importExcelModal').modal({ backdrop: 'static', keyboard: false });
+    }
+
 </script>
-<style>
-     #employeeTable {
-         width: 100% !important;
-         table-layout: auto !important;
-         white-space: nowrap;
-     }
-</style>
+  @* <style>
+       #employeeTable {
+           width: 100% !important;
+           table-layout: auto !important;
+           white-space: nowrap;
+       }
+  </style> *@

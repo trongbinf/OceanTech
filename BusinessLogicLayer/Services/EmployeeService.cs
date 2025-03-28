@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace BusinessLogicLayer.Services
 {
-   public class EmployeeService : IEmployeeService
+    public class EmployeeService : IEmployeeService
    {
         private readonly IUnitOfWork _unitOfWork;
         public EmployeeService(IUnitOfWork unitOfWork)
@@ -34,6 +34,7 @@ namespace BusinessLogicLayer.Services
             var allEmployees = await _unitOfWork.Employees.GetAllAsync(
                 include: query => query
                             .Include(o => o.Certificates)
+                                .ThenInclude(c => c.Province)
                             .Include(o => o.Ward)
 
                                .ThenInclude(od => od.District)
@@ -41,6 +42,14 @@ namespace BusinessLogicLayer.Services
 
                 );
             return allEmployees.FirstOrDefault(e => e.Id == id);
+        }
+        public async Task<Employee> GetEmployeeByIdentityCard(string id)
+        {
+            var allEmployees = await _unitOfWork.Employees.GetByDelegateAsync(
+                e => e.IdentityCard == id
+
+                );
+            return allEmployees.FirstOrDefault();
         }
 
         public async Task<IEnumerable<Employee>> GetEmployees()
@@ -56,9 +65,14 @@ namespace BusinessLogicLayer.Services
                 );
         }
 
-        public Task<bool> UpdateEmployee(Employee e)
+        public async Task<bool> UpdateEmployee(Employee e)
         {
-            var result = _unitOfWork.Employees.UpdateAsync(e);
+            var result = await _unitOfWork.Employees.UpdateAsync(e);
+            return result;
+        }
+        public async Task<bool> AddRangeEmployee(List<Employee> employees)
+        {
+            var result = await _unitOfWork.Employees.AddRangeAsync(employees);
             return result;
         }
     }

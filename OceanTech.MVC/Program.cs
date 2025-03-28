@@ -4,7 +4,6 @@ using DataAccessLayer.Data;
 using DataAccessLayer.Repositories;
 using DataAccessLayer.UnitOfWork;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.OpenApi.Models;
 
 namespace OceanTech.MVC
 {
@@ -20,16 +19,6 @@ namespace OceanTech.MVC
             builder.Services.AddDbContext<OceanTechDbContext>(options =>
             {
                 options.UseSqlServer(builder.Configuration.GetConnectionString("DBContext"));
-            });
-            // Thêm dịch vụ Swagger
-            builder.Services.AddSwaggerGen(c =>
-            {
-                c.SwaggerDoc("v1", new OpenApiInfo
-                {
-                    Version = "v1",
-                    Title = "OceanTech API",
-                    Description = "API documentation for OceanTech project"
-                });
             });
 
             builder.Services.AddScoped<IEmployeeService, EmployeeService>();
@@ -60,21 +49,20 @@ namespace OceanTech.MVC
 
             app.UseAuthorization();
 
-
-            // Chỉ hiển thị Swagger trong môi trường Development
-            app.UseSwagger();
-            app.UseSwaggerUI(c =>
-            {
-                c.SwaggerEndpoint("/swagger/v1/swagger.json", "OceanTech API V1");
-                c.RoutePrefix = string.Empty;
-            });
-
             app.MapRazorPages();
 
             app.MapControllerRoute(
                 name: "default",
                 pattern: "{controller=Home}/{action=Index}/{id?}");
-
+            app.Use(async (context, next) =>
+            {
+                if (context.Request.Path == "/index.html")
+                {
+                    context.Response.Redirect("/Home");
+                    return;
+                }
+                await next();
+            });
             app.Run();
         }
     }

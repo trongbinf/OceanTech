@@ -19,6 +19,8 @@ namespace BusinessLogicLayer.Services
 
         public async Task<bool> CreateProvince(Province province)
         {
+            var existingProvince = await _unitOfWork.Provinces.GetByDelegateAsync(p => p.Name == province.Name);
+            if(existingProvince.FirstOrDefault() != null) return false;
             var result = await _unitOfWork.Provinces.AddAsync(province);
             await _unitOfWork.CompleteAsync();
             return result;
@@ -34,6 +36,10 @@ namespace BusinessLogicLayer.Services
         public async Task<Province> GetProvinceById(int id)
         {
             return await _unitOfWork.Provinces.GetByIdAsync(id);
+        }
+        public async Task<Province> GetProvinceByName(string name)
+        {
+            return (await _unitOfWork.Provinces.GetByDelegateAsync(p => p.Name == name)).FirstOrDefault();
         }
 
         public async Task<IEnumerable<Province>> GetProvinces()

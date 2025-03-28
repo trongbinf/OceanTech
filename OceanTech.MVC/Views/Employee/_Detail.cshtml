@@ -1,6 +1,95 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
-@{
+﻿@model BusinessModels.Entities.Employee
+<h3>Danh sách văn bằng</h3>
+@if (Model.Certificates.Count < 3)
+{
+    <button class="btn btn-primary" onclick="openModal('/Certificate/Create?employeeId=@Model.Id')">Thêm văn bằng</button>
+}else{
+    <p class="text-danger">Employee đã có đủ 3 văn bằng</p>
 }
-<h1>Detail</h1>
+<table id="certificatesTable" class="table table-striped">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Tên</th>
+            <th>Ngày cấp</th>
+            <th>Ngày hết hạn</th>
+            <th>Mô tả</th>
+            <th>Tỉnh cấp</th>
+
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var cert in Model.Certificates)
+        {
+            <tr>
+                <td>@cert.Id</td>
+
+                <td>@cert.Name</td>
+                <td>@cert.DateOfIssue.ToShortDateString()</td>
+                <td>@cert.DateOfExpiry.ToShortDateString()</td>
+                <td>@cert.Description</td>
+
+                <td>@cert.Province.Name</td>
+
+
+                <td>
+                    <a href="javascript:void(0);" onclick="openModal('/Certificate/Edit/@cert.Id')">Chỉnh sửa</a> |
+                    <a href="javascript:void(0);" onclick="deleteCertificate('@cert.Id')">Xóa</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+<div class="d-flex justify-content-between">
+    <a href="javascript:void(0);" onclick="loadEmployeeList()">Danh sách Employee</a>
+    
+</div>
+
+<div id="certificateModal" class="modal fade" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Certificate</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close" onclick="closeModal()">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body" id="certificateModalBody">
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function closeModal() {
+        $('#certificateModal').modal('hide');
+    }
+    function openModal(url) {
+        $.get(url, function (data) {
+            $('#certificateModalBody').html(data);
+            $('#certificateModal').modal('show');
+        });
+    }
+    function loadEmployeeList() {
+        $.get("/Employee/Index", function (data) {
+            $("#employeeContainer").html(data);
+        });
+    }
+    var deleteCertificate = function (id) {
+        if (confirm("Bạn có chắc chắn muốn xóa văn bằng này không?")) {
+            $.ajax({
+                url: "/Certificate/Delete/" + id,
+                type: "POST",
+                success: function (response) {
+                    alert("Xóa thành công!");
+                    location.reload();
+                    
+                },
+                error: function () {
+                    alert("Xóa không thành công. Vui lòng thử lại!");
+                }
+            });
+        }
+    };
+</script>

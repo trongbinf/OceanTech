@@ -1,11 +1,14 @@
 ﻿<div class="card">
-    <div class="card-body">
-        <h3>Danh sách Tỉnh</h3>
+    <div class="card-body" id="provinceContainer">
+        <h3>Danh sách Tỉnh / Thành Phố</h3>
+        <button class="btn btn-outline-primary m-2" onclick="createProvince()">Thêm mới</button>
+
         <table id="provinceTable" class="display">
             <thead>
                 <tr>
                     <th>ID</th>
                     <th>Tên</th>
+                    <th></th>
 
                 </tr>
             </thead>
@@ -15,6 +18,12 @@
                     <tr>
                         <td>@province.Id</td>
                         <td>@province.Name</td>
+                        <td>
+                            <a href="javascript:void(0);" onclick="editProvince('@province.Id')">Chỉnh sửa</a> |
+                            <a href="javascript:void(0);" onclick="deleteProvince('@province.Id')">Xóa</a>
+
+
+                        </td>
                     </tr>
                 }
             </tbody>
@@ -35,7 +44,48 @@
                     "next": "Tiếp",
                     "previous": "Trước"
                 }
-            }
-        });
+            },
+            "columnDefs": [
+                { "searchable": false, "targets": -1 }
+            ]
+        },
+
+        );
     });
+    var createProvince = function () {
+        $.get("/Province/Create", function (data) {
+            $("#provinceContainer").html(data);
+        });
+    }
+    var viewProvince = function (id) {
+        $.get("/Province/Detail/" + id, function (data) {
+            $("#provinceContainer").html(data);
+        });
+    }
+    var editProvince = function (id) {
+        $.get("/Province/Edit/" + id, function (data) {
+            $("#provinceContainer").html(data);
+        });
+    }
+    var deleteProvince = function (id) {
+        if (confirm("Bạn có chắc chắn muốn xóa tỉnh này không?")) {
+            $.ajax({
+                url: "/Province/Delete/" + id,
+                type: "POST",
+                success: function (response) {
+                    alert("Xóa thành công!");
+                    // location.reload();
+                    loadProvinceList();
+                },
+                error: function () {
+                    alert("Xóa không thành công. Vui lòng thử lại!");
+                }
+            });
+        }
+    };
+    function loadProvinceList() {
+        $.get("/Province/Index", function (data) {
+            $("#provinceContainer").html(data);
+        });
+    }
 </script>

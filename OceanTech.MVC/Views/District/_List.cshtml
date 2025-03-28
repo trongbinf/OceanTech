@@ -1,12 +1,14 @@
 ﻿<div class="card">
-    <div class="card-body">
-        <h3>Danh sách Huyện</h3>
+    <div class="card-body" id="districtContainer">
+        <h3>Danh sách Quận / Huyện</h3>
+        <button class="btn btn-outline-primary m-2" onclick="createDistrict()">Thêm mới</button>
         <table id="districtTable" class="display">
             <thead>
                 <tr>
                     <th>ID</th>
                     <th>Tên</th>
-                    <th>Tỉnh</th>
+                    <th>Tỉnh / Thành phố</th>
+                    <th></th>
 
                 </tr>
             </thead>
@@ -17,6 +19,12 @@
                         <td>@district.Id</td>
                         <td>@district.Name</td>
                         <td>@district.Province.Name</td>
+                        <td>
+                            <a href="javascript:void(0);" onclick="editDistrict('@district.Id')">Chỉnh sửa</a> |
+                            <a href="javascript:void(0);" onclick="deleteDistrict('@district.Id')">Xóa</a>
+
+
+                        </td>
                     </tr>
                 }
             </tbody>
@@ -37,7 +45,48 @@
                     "next": "Tiếp",
                     "previous": "Trước"
                 }
-            }
+            },
+            "columnDefs": [
+                { "searchable": false, "targets": -1 } 
+            ]
+
         });
     });
+    var createDistrict = function () {
+        $.get("/District/Create", function (data) {
+            $("#districtContainer").html(data);
+        });
+    }
+    var viewDistrict = function (id) {
+        $.get("/District/Detail/" + id, function (data) {
+            $("#districtContainer").html(data);
+        });
+    }
+    var editDistrict = function (id) {
+        $.get("/District/Edit/" + id, function (data) {
+            $("#districtContainer").html(data);
+        });
+    }
+    var deleteDistrict = function (id) {
+        if (confirm("Bạn có chắc chắn muốn xóa huyện / thành phố này không?")) {
+            $.ajax({
+                url: "/District/Delete/" + id,
+                type: "POST",
+                success: function (response) {
+                    alert("Xóa thành công!");
+                    // location.reload();
+                    loadDistrictList();
+                },
+                error: function () {
+                    alert("Xóa không thành công. Vui lòng thử lại!");
+                }
+            });
+        }
+    };
+    function loadDistrictList() {
+        $.get("/District/Index", function (data) {
+            $("#districtContainer").html(data);
+        });
+    }
+
 </script>

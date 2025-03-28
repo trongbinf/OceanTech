@@ -11,6 +11,8 @@ namespace BusinessLogicLayer.Services.Interfaces
     {
         Task<IEnumerable<Province>> GetProvinces();
         Task<Province> GetProvinceById(int id);
+        Task<Province> GetProvinceByName(string name);
+
         Task<bool> CreateProvince(Province province);
         Task<bool> UpdateProvince(Province province);
         Task<bool> DeleteProvince(int id);

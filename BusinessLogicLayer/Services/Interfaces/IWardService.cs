@@ -11,6 +11,7 @@ namespace BusinessLogicLayer.Services.Interfaces
     {
         Task<IEnumerable<Ward>> GetWards();
         Task<IEnumerable<Ward>> GetWardsByDistrictId(int districtId);
+        Task<Ward> GetWardByName(string name);
 
         Task<Ward> GetWardById(int id);
         Task<bool> CreateWard(Ward Ward);

@@ -1,14 +1,16 @@
 ﻿<div class="card">
-    <div class="card-body">
-        <h3>Danh sách Xã</h3>
+    <div class="card-body" id="wardContainer">
+        <h3>Danh sách Xã / Phường</h3>
+        <button class="btn btn-outline-primary m-2" onclick="createWard()">Thêm mới</button>
+
         <table id="wardTable" class="display">
             <thead>
                 <tr>
                     <th>ID</th>
                     <th>Tên</th>
-                    <th>Huyện</th>
-                    <th>Tỉnh</th>
-
+                    <th>Quận / Huyện</th>
+                    <th>Tỉnh / Thành phố</th>
+                    <th></th>
 
                 </tr>
             </thead>
@@ -20,7 +22,12 @@
                         <td>@ward.Name</td>
                         <td>@ward.District.Name</td>
                         <td>@ward.District.Province.Name</td>
+                        <td>
+                            <a href="javascript:void(0);" onclick="editWard('@ward.Id')">Chỉnh sửa</a> |
+                            <a href="javascript:void(0);" onclick="deleteWard('@ward.Id')">Xóa</a>
 
+
+                        </td>
                     </tr>
                 }
             </tbody>
@@ -41,7 +48,46 @@
                     "next": "Tiếp",
                     "previous": "Trước"
                 }
-            }
+            },
+            "columnDefs": [
+                { "searchable": false, "targets": -1 }
+            ]
         });
     });
+    var createWard = function () {
+        $.get("/Ward/Create", function (data) {
+            $("#wardContainer").html(data);
+        });
+    }
+    var viewWard = function (id) {
+        $.get("/Ward/Detail/" + id, function (data) {
+            $("#wardContainer").html(data);
+        });
+    }
+    var editWard = function (id) {
+        $.get("/Ward/Edit/" + id, function (data) {
+            $("#wardContainer").html(data);
+        });
+    }
+    var deleteWard = function (id) {
+        if (confirm("Bạn có chắc chắn muốn xóa xã / phường này không?")) {
+            $.ajax({
+                url: "/Ward/Delete/" + id,
+                type: "POST",
+                success: function (response) {
+                    alert("Xóa thành công!");
+                    // location.reload();
+                    loadWardList();
+                },
+                error: function () {
+                    alert("Xóa không thành công. Vui lòng thử lại!");
+                }
+            });
+        }
+    };
+    function loadWardList() {
+        $.get("/Ward/Index", function (data) {
+            $("#wardContainer").html(data);
+        });
+    }
 </script>

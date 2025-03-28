@@ -1,0 +1,90 @@
+﻿@model BusinessModels.Entities.Certificate
+
+<form asp-action="@(Model.Id == 0 ? "Create" : "Edit")" asp-controller="Certificate" method="post">
+    <input type="hidden" asp-for="EmployeeId" />
+    <input type="hidden" asp-for="Id" />
+    <div class="form-group">
+        <label asp-for="Name">Tên</label>
+        <input asp-for="Name" class="form-control" />
+        <span asp-validation-for="Name" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="Description">Mô Tả</label>
+        <input asp-for="Description" type="text" class="form-control" />
+        <span asp-validation-for="Description" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="DateOfIssue"></label>
+        <input asp-for="DateOfIssue" type="date" class="form-control" />
+        <span asp-validation-for="DateOfIssue" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="DateOfExpiry"></label>
+        <input asp-for="DateOfExpiry" type="date" class="form-control" />
+        <span asp-validation-for="DateOfExpiry" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="ProvinceId">Tỉnh cấp</label>
+
+        <select id="province" class="form-control" asp-for="ProvinceId">
+            <option value="">Chọn Tỉnh / Thành phố</option>
+        </select>
+    </div>
+    <button type="submit" class="btn btn-success m-2">Lưu</button>
+</form>
+<script>
+    
+    $(document).ready(function () {
+ 
+        let id = $("#Id").val();
+        if (id == 0) {
+            loadProvinces();
+        } else {
+            loadProvinces(@Model.ProvinceId);
+        }
+        $("form").submit(function (e) {
+            e.preventDefault();
+
+            let form = $(this);
+
+            $.ajax({
+                type: "POST",
+                url: id == 0 ? "/Certificate/Create" : "/Certificate/Edit/" + id, 
+                data: form.serialize(),
+                success: function (response) {
+                    alert("Thành công");
+                    location.reload();
+                },
+                error: function (xhr) {
+                    alert("Lỗi: " + (xhr.responseJSON?.message || "Không thể xử lý yêu cầu."));
+                }
+            });
+
+            $('#certificateModal').modal('hide');
+        });
+    });
+    
+    function loadProvinces() {
+        $.getJSON("/Province/GetAll", function (data) {
+            $.each(data, function (index, item) {
+                $("#province").append($('<option>', { value: item.id, text: item.name }));
+            });
+        });
+    }
+    function loadProvinces(selectedProvinceId) {
+        $.getJSON("/Province/GetAll", function (data) {
+            $.each(data, function (index, item) {
+                var option = $('<option>', { value: item.id, text: item.name });
+                if (item.id == selectedProvinceId) {
+                    option.attr("selected", "selected");
+                }
+                $("#province").append(option);
+            });
+        });
+    }
+    var viewEmployee = function (id) {
+        $.get("/Employee/Detail/" + id, function (data) {
+            $("#employeeContainer").html(data);
+        });
+    }
+</script>
